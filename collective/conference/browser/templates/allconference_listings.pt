@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="here/main_template/macros/master"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"      
+      i18n:domain="plone">        
+<head>
+   <metal:block fill-slot="style_slot">
+      <metal:block use-macro="here/@@collective-conference-macros/macros/styles"/>
+   </metal:block>
+</head>
+<body>
+	<div metal:fill-slot="main">
+		<div id="ajaxsearch" style="display: none" tal:attributes="data-ajax-target string:${portal_url}/@@ajaxsearch"></div>
+		<div id="ajaxmorearea" style="display: none" tal:attributes="data-ajax-target string:${portal_url}/@@ajax-conference-province"></div>		
+		<div id="ajaxmoretype" style="display: none" tal:attributes="data-ajax-target string:${portal_url}/@@ajax-conference-type"></div>			
+
+        <!--左边内容-->
+        <div class="event_list_page container">
+            <!--搜索框、搜索条件选择-->
+            <div class="event_list_search">
+                <ul class="search row-fluid hidden-phone">
+                    <li class="a">
+                        <input type="text"  onkeypress="if(event.keyCode==13) {searchEventParent();return false}" id="searchKeyword">
+                    </li>
+                    <!-- onkeydown="enterSearch(event,'searchKeyword','currEventText');"-->
+                    <li class="b">
+                        <a href="javascript:searchEventParent()">&nbsp;&nbsp;搜索</a><!-- 搜索 -->
+                    </li>
+                </ul>
+                <input type="hidden" value="0" id="dateSearch">
+                <input type="hidden" value="0" id="addressSearch">
+                <input type="hidden" value="0" id="categorySearch">                
+                <input type="hidden" value="conference_startDate" id="solrSortColumn">
+                <input type="hidden" value="reverse" id="solrSortDirection">
+                
+                <ul class="fenlei row-fluid" id="dateRangeSearchUl">
+                    <li class="title">
+                        按日期：<!-- 按日期： -->
+                    </li>
+                    <li name="0" class="all over">
+                        <a href="javascript:void(0)">所有</a><!-- 所有 -->
+                    </li>
+                    <li name="1">
+                        <a href="javascript:void(0)">今天</a><!-- 今天 -->
+                    </li>
+                    <li name="2">
+                        <a href="javascript:void(0)">明天</a><!-- 明天 -->
+                    </li>
+                    <li name="3">
+                        <a href="javascript:void(0)">7天内</a><!-- 7天内 -->
+                    </li>
+                    <li name="4">
+                        <a href="javascript:void(0)">30天内</a><!-- 30天内 -->
+                    </li>
+                    <li name="5">
+                        <a href="javascript:void(0)">30天后</a><!-- 30天后 -->
+                    </li>
+                </ul>
+
+                <ul id="addressSelectSearch" class="fenlei row-fluid">                	
+                    <li class="title">
+                    				按地区：
+                    </li>
+
+                    <li class="all">
+                        <span class="over" name="0"><a href="javascript:void(0)">所有</a></span><!-- 所有 -->
+                    </li>
+                    <li id="province_list_div" class="fenlei_a" style="background: none;padding: 0">
+                    	<span name="3"><a href="javascript:void(0)">北京</a></span>
+                    	<span name="17"><a href="javascript:void(0)">上海</a></span>
+                    	<span name="23"><a href="javascript:void(0)">广东</a></span>                    	
+                    	<span name="27"><a href="javascript:void(0)">深圳</a></span>
+                    </li>
+
+                    <li id="li_province_more" style="z-index: 3;" class="more">
+                        <a href="javascript:innerMoreArea()">更多&gt;&gt;</a><!-- 更多 -->
+                        <div style="display: none" class="diqu_more" id="address_more_div">
+                            <div class="a">
+                                <div class="city" id="addressSearchMore1">
+                                </div>
+                            </div>
+                        </div>
+                    </li>                    
+                </ul>
+
+                <ul id="categorySelectSearch" class="fenlei row-fluid">
+                    <li class="title">
+                        按分类：<!-- 按分类： -->
+                    </li>
+                    <!--活动列表循环-->
+                    <li class="all">
+                        <span name="0" class="over"><a href="javascript:void(0)">所有</a></span><!-- 所有 -->
+                    </li>
+                    
+                    <li id="event_category_div" class="fenlei_a" style="background: none;padding: 0">
+                    	<span name="1"><a href="javascript:void(0)">区域沙龙</a></span>
+                    	<span name="2"><a href="javascript:void(0)">年度峰会</a></span>
+                    	<span name="3"><a href="javascript:void(0)">专题研究</a></span>
+                    </li>
+                </ul>
+            </div>
+            <!--搜索框、搜索条件选择 End-->
+
+            <!--搜索选择结果-->
+            <div class="event_list_search_select">
+                <ul class="row-fluid" id="all_result_recordinfo"><li class="a">已选择：</li><li id="show_site_result"><div onclick="closeSearchEventsDiv(1)" class="select">时间：<span style="cursor: pointer;vertical-align: middle;">2天内&nbsp;</span></div></li><li id="searchresultinfor" class="info">的信息有“<span id="searchresult_count">0</span>”条！</li></ul>
+
+            </div>
+            <!--搜索选择结果 End-->
+
+            <!--搜索选择结果排序-->
+            <div class="event_list_search_paixu row-fluid">
+                <div id="eventListSort" class="paixu span9">
+                    <span>排序：</span><!-- 排序： -->                    
+                    <a style="" class="a" name="conference_startDate" id="startTimestamp" href="javascript:void(0)">开始时间</a><!-- 开始时间 -->
+                    <a class="b" name="created" id="publishTimestamp" href="javascript:void(0)" style="font-weight:bold;color:#279006;">发布时间</a><!-- 发布时间 -->                  
+
+                </div>
+
+                <!--快速翻页-->
+                <div id="fastPageList" class="q_page span3"><a href="javascript:void(0)">
+                	<img tal:attributes="src string:++resource++collective.conference/event_list_bg10.png"/></a>
+                	<span>1/16</span><a href="javascript:searchEvent(2,10)"><img tal:attributes="src string:++resource++collective.conference/event_list_bg11.png"/></a></div>
+                <!--快速翻页 End-->
+            </div>
+            <!--搜索选择结果排序 End-->
+
+            <!--搜索结果列表-->
+            <div id="searchResultDiv" class="row-fluid">
+            	<div class="event_list_search_list">
+            		<ul>
+            			<li class="pic"><p>2013-05-07</p><a target="_blank" href="http://gmic-cn-expo.eventdove.com/">
+            			</a>
+            			</li>
+            			<li class="title"><div>
+            				<h3><a target="_blank" href="http://gmic-cn-expo.eventdove.com/">全球移动互联网大会·北京·2013-展览</a></h3>
+            				<p>地点: <span>北京.东城区.天辰东路7号国家会议中心</span></p><p>时间: <span>2013-05-07 09:00 - 2013-05-08 18:00</span></p>
+            				<p>主办: <span><a href="http://www.eventdove.com/org/2044">长城会</a></span></p><p class="jianjie">与移动互联网浪潮在全球的发展一同前行，做为行业最领先的全球性大会，全球移动互联网大会（英文简称：GMIC）正式走入第五年。主办方长城会宣布，第五届GMIC大会（GMIC 2013）将于2013年5月在国家会议中心•北京拉开序幕。
+从沟通、娱乐、消费等生活的细节…… <a target="_blank" href="http://gmic-cn-expo.eventdove.com/">详细</a></p>
+</div></li></ul></div>
+</div>
+            <!--搜索结果列表 End-->
+            <div class="row">
+            <div id="bottomPageId" class="page_div offset5 pagination pagination-centered">
+            	<a class="page" href="javascript:void(0)">首页</a>
+            	<a class="page" href="javascript:void(0)">上一页</a>
+            	<a class="page_over num" href="#">1</a>
+            	<a class="page num" href="javascript:searchEvent(2,10)">2</a>
+            	<a class="page num" href="javascript:searchEvent(3,10)">3</a>
+            	<a class="page" href="javascript:searchEvent(2,10)">下一页</a>
+            	<a class="page" href="javascript:searchEvent(16,10)">末页</a>
+            	</div>
+				</div>
+        <!--左边内容 End-->
+</div>
+</div>
+   <metal:js fill-slot="javascript_bottom_slot">
+	<script type="text/javascript"
+		tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+     tal:attributes="src string:${navroot}/++resource++collective.conference/ajaxsearch.js">	  	
+	</script>	
+	</metal:js>
+</body>
+</html>
