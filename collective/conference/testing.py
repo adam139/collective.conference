@@ -32,7 +32,8 @@ class Sandbox(PloneSandboxLayer):
     
     def setUpPloneSite(self, portal):
         applyProfile(portal, 'collective.conference:default')
-        applyProfile(portal, 'dexterity.membrane:default')                  
+        applyProfile(portal, 'dexterity.membrane:default')  
+        applyProfile(portal, 'dexterity.membrane.content:example')                 
       
 
 TEST_FIXTURE = Sandbox()
