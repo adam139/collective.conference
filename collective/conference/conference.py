@@ -46,7 +46,7 @@ class IConference(form.Schema, IImageScaleTraversable):
     )    
     province = schema.Choice(
         title=_(u"province"),
-        vocabulary="dexterity.membrane.vocabulary.province"
+        vocabulary="dexterity.membrane.browser.vocabulary.province"
     )  
     address = schema.TextLine(title=_(u"Address"))   
     form.widget(rooms='plone.z3cform.textlines.TextLinesFieldWidget')

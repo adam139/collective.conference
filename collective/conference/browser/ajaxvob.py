@@ -5,7 +5,7 @@ from Products.CMFCore.utils import getToolByName
 from plone.app.layout.navigation.interfaces import INavigationRoot
 
 from collective.conference.vocabulary import conference_type 
-from dexterity.membrane.vocabulary import province_type
+from dexterity.membrane.browser.vocabulary import province_type
 
 from zope.i18n.interfaces import ITranslationDomain
 from zope.component import queryUtility 

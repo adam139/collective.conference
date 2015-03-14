@@ -19,7 +19,7 @@ from collective.conference import MessageFactory as _
 
 from collective.conference.conference import IConference
 from collective.conference.conferencefolder import IConferencefolder
-from dexterity.membrane.vocabulary import province_type 
+from dexterity.membrane.browser.vocabulary import province_type 
 from Products.CMFCore import permissions
 
 grok.templatedir('templates')
